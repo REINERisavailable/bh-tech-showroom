@@ -14,13 +14,13 @@ const Hero = () => {
           </p>
           <div className="flex flex-col sm:flex-row gap-4">
             <a 
-              href="#informatique" 
+              href="/informatique" 
               className="inline-flex items-center justify-center bg-white text-primary px-6 py-3 rounded-md font-semibold hover:bg-white/90 transition-colors"
             >
               Voir les ordinateurs
             </a>
             <a 
-              href="#surveillance" 
+              href="/surveillance" 
               className="inline-flex items-center justify-center bg-primary-foreground/10 border-2 border-white text-white px-6 py-3 rounded-md font-semibold hover:bg-primary-foreground/20 transition-colors"
             >
               Caméras de surveillance
