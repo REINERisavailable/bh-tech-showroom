@@ -60,6 +60,7 @@ const Index = () => {
             {popularProducts.map((product) => (
               <ProductCard
                 key={product.id}
+                id={String(product.id)}
                 image={product.image}
                 title={product.title}
                 price={product.price}

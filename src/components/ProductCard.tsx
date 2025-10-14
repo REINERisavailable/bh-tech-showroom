@@ -2,8 +2,11 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { ShoppingCart } from "lucide-react";
+import { useCart } from "@/contexts/CartContext";
+import { useToast } from "@/hooks/use-toast";
 
 interface ProductCardProps {
+  id: string;
   image: string;
   title: string;
   price: string;
@@ -12,7 +15,20 @@ interface ProductCardProps {
   stock: string;
 }
 
-const ProductCard = ({ image, title, price, oldPrice, badge, stock }: ProductCardProps) => {
+const ProductCard = ({ id, image, title, price, oldPrice, badge, stock }: ProductCardProps) => {
+  const { addItem } = useCart();
+  const { toast } = useToast();
+
+  const handleAddToCart = () => {
+    addItem({
+      id,
+      title,
+      price: parseFloat(price.replace(/[^0-9.]/g, '')),
+      image_url: image
+    });
+    toast({ title: 'Produit ajouté au panier' });
+  };
+
   return (
     <Card className="group overflow-hidden hover:shadow-lg transition-shadow">
       <CardContent className="p-4">
@@ -44,7 +60,7 @@ const ProductCard = ({ image, title, price, oldPrice, badge, stock }: ProductCar
 
         <div className="flex items-center justify-between gap-2">
           <span className="text-xs text-muted-foreground">{stock}</span>
-          <Button size="sm" className="gap-2">
+          <Button size="sm" className="gap-2" onClick={handleAddToCart}>
             <ShoppingCart className="h-4 w-4" />
             Ajouter
           </Button>

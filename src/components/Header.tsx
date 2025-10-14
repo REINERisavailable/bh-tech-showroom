@@ -1,12 +1,53 @@
-import { ShoppingCart, Phone, Search, ChevronDown } from "lucide-react";
+import { ShoppingCart, Phone, Search, ChevronDown, User, LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { useState } from "react";
-import { Link } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { useCart } from "@/contexts/CartContext";
+import { supabase } from "@/integrations/supabase/client";
 import logo from "@/assets/logo.jpeg";
 
 const Header = () => {
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
+  const [user, setUser] = useState<any>(null);
+  const [isAdmin, setIsAdmin] = useState(false);
+  const { totalItems } = useCart();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setUser(session?.user ?? null);
+      if (session?.user) {
+        checkAdmin(session.user.id);
+      }
+    });
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUser(session?.user ?? null);
+      if (session?.user) {
+        checkAdmin(session.user.id);
+      } else {
+        setIsAdmin(false);
+      }
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
+
+  const checkAdmin = async (userId: string) => {
+    const { data } = await supabase
+      .from('user_roles')
+      .select('role')
+      .eq('user_id', userId)
+      .eq('role', 'admin')
+      .single();
+    setIsAdmin(!!data);
+  };
+
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    navigate('/');
+  };
 
   const categories = {
     informatique: {
@@ -209,10 +250,37 @@ const Header = () => {
             </div>
           </div>
 
-          <Button variant="default" className="gap-2">
-            <ShoppingCart className="h-5 w-5" />
-            <span className="hidden md:inline">Panier</span>
-          </Button>
+          <div className="flex items-center gap-2">
+            {user ? (
+              <>
+                {isAdmin && (
+                  <Button variant="outline" size="sm" asChild className="hidden md:flex">
+                    <Link to="/admin">Admin</Link>
+                  </Button>
+                )}
+                <Button variant="ghost" size="icon" onClick={handleLogout} title="Se déconnecter">
+                  <LogOut className="h-5 w-5" />
+                </Button>
+              </>
+            ) : (
+              <Button variant="ghost" size="icon" asChild title="Se connecter">
+                <Link to="/auth">
+                  <User className="h-5 w-5" />
+                </Link>
+              </Button>
+            )}
+            <Button variant="default" className="gap-2 relative" asChild>
+              <Link to="/cart">
+                <ShoppingCart className="h-5 w-5" />
+                <span className="hidden md:inline">Panier</span>
+                {totalItems > 0 && (
+                  <span className="absolute -top-1 -right-1 bg-destructive text-destructive-foreground text-xs rounded-full h-5 w-5 flex items-center justify-center">
+                    {totalItems}
+                  </span>
+                )}
+              </Link>
+            </Button>
+          </div>
         </div>
       </div>
 
