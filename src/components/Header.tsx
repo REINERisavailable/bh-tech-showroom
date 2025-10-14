@@ -217,10 +217,10 @@ const Header = () => {
       </div>
 
       {/* Navigation */}
-      <nav className="bg-secondary border-t border-border">
+      <nav className="bg-secondary border-t border-border relative z-40">
         <div className="container mx-auto px-4">
-          <ul className="flex gap-6 overflow-x-auto py-3 text-sm font-medium">
-            <li>
+          <ul className="flex gap-6 overflow-x-auto text-sm font-medium">
+            <li className="py-3">
               <Link to="/" className="hover:text-primary transition-colors whitespace-nowrap">
                 Accueil
               </Link>
@@ -230,13 +230,13 @@ const Header = () => {
             {Object.entries(categories).map(([key, category]) => (
               <li 
                 key={key}
-                className="relative group"
+                className="relative py-3"
                 onMouseEnter={() => setOpenDropdown(key)}
                 onMouseLeave={() => setOpenDropdown(null)}
               >
                 <Link 
                   to={category.route} 
-                  className="hover:text-primary transition-colors whitespace-nowrap flex items-center gap-1 py-3"
+                  className="hover:text-primary transition-colors whitespace-nowrap flex items-center gap-1"
                 >
                   {category.name}
                   <ChevronDown className="h-3 w-3" />
@@ -245,31 +245,33 @@ const Header = () => {
                 {/* Mega Menu Dropdown */}
                 {openDropdown === key && (
                   <div 
-                    className="absolute top-full left-0 pt-0 z-50"
+                    className="fixed left-0 right-0 top-[180px] z-[100] px-4"
                     onMouseEnter={() => setOpenDropdown(key)}
                     onMouseLeave={() => setOpenDropdown(null)}
                   >
-                    <div className="bg-card border border-border rounded-lg shadow-xl p-6 min-w-[700px] max-w-4xl mt-0">
-                      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-                        {category.subcategories.map((subcat) => (
-                          <div key={subcat.name} className="space-y-2">
-                            <h4 className="font-semibold text-sm text-foreground border-b border-border pb-1">
-                              {subcat.name}
-                            </h4>
-                            <ul className="space-y-1.5">
-                              {subcat.items.map((item) => (
-                                <li key={item.name}>
-                                  <Link 
-                                    to={item.route} 
-                                    className="text-muted-foreground hover:text-primary transition-colors text-xs block py-0.5"
-                                  >
-                                    {item.name}
-                                  </Link>
-                                </li>
-                              ))}
-                            </ul>
-                          </div>
-                        ))}
+                    <div className="container mx-auto">
+                      <div className="bg-card border border-border rounded-lg shadow-2xl p-8 max-w-7xl mx-auto">
+                        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
+                          {category.subcategories.map((subcat) => (
+                            <div key={subcat.name} className="space-y-3">
+                              <h4 className="font-bold text-sm text-foreground border-b-2 border-primary pb-2">
+                                {subcat.name}
+                              </h4>
+                              <ul className="space-y-2">
+                                {subcat.items.map((item) => (
+                                  <li key={item.name}>
+                                    <Link 
+                                      to={item.route} 
+                                      className="text-muted-foreground hover:text-primary transition-colors text-sm block py-1 hover:translate-x-1 transform duration-150"
+                                    >
+                                      {item.name}
+                                    </Link>
+                                  </li>
+                                ))}
+                              </ul>
+                            </div>
+                          ))}
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -277,12 +279,12 @@ const Header = () => {
               </li>
             ))}
 
-            <li>
+            <li className="py-3">
               <Link to="/promotions" className="hover:text-primary transition-colors whitespace-nowrap">
                 Promotions
               </Link>
             </li>
-            <li>
+            <li className="py-3">
               <Link to="/contact" className="hover:text-primary transition-colors whitespace-nowrap">
                 Contact
               </Link>
