@@ -1,48 +1,25 @@
+import { useEffect, useState } from "react";
 import Header from "@/components/Header";
 import Hero from "@/components/Hero";
 import ProductCard from "@/components/ProductCard";
 import Footer from "@/components/Footer";
-import prod1 from "@/assets/prod1.jpg";
-import prod2 from "@/assets/prod2.jpg";
+import { supabase } from "@/integrations/supabase/client";
 
 const Index = () => {
-  // Generate popular products - mix of both products sorted by popularity
-  const generatePopularProducts = () => {
-    const baseProducts = [
-      {
-        id: 1,
-        image: prod1,
-        title: "THE IMOU RANGER 2 - Caméra 3K Smart",
-        price: "1,299.00 MAD",
-        oldPrice: "1,599.00 MAD",
-        badge: "-19% OFF",
-        stock: "En stock",
-        popularity: 95
-      },
-      {
-        id: 2,
-        image: prod2,
-        title: "HP ELITEBOOK 830 G7 X360",
-        price: "8,500.00 MAD",
-        oldPrice: "10,200.00 MAD",
-        badge: "-17% OFF",
-        stock: "En stock",
-        popularity: 92
-      }
-    ];
+  const [products, setProducts] = useState<any[]>([]);
 
-    const products = [];
-    for (let i = 0; i < 16; i++) {
-      const baseProduct = baseProducts[i % 2];
-      products.push({
-        ...baseProduct,
-        id: i + 1,
-      });
-    }
-    return products;
+  useEffect(() => {
+    fetchProducts();
+  }, []);
+
+  const fetchProducts = async () => {
+    const { data } = await supabase
+      .from('products')
+      .select('*')
+      .order('popularity', { ascending: false })
+      .limit(16);
+    if (data) setProducts(data);
   };
-
-  const popularProducts = generatePopularProducts();
 
   return (
     <div className="min-h-screen bg-background">
@@ -57,16 +34,16 @@ const Index = () => {
             <p className="text-muted-foreground">Découvrez nos produits les plus demandés</p>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            {popularProducts.map((product) => (
+            {products.map((product) => (
               <ProductCard
                 key={product.id}
-                id={String(product.id)}
-                image={product.image}
+                id={product.id}
+                image={product.image_url || '/placeholder.svg'}
                 title={product.title}
-                price={product.price}
-                oldPrice={product.oldPrice}
-                badge={product.badge}
-                stock={product.stock}
+                price={`${product.price} MAD`}
+                oldPrice={product.old_price ? `${product.old_price} MAD` : undefined}
+                badge={product.old_price ? `-${Math.round(((product.old_price - product.price) / product.old_price) * 100)}% OFF` : undefined}
+                stock={product.stock_status}
               />
             ))}
           </div>

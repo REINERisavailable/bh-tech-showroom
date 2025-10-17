@@ -1,26 +1,24 @@
+import { useEffect, useState } from "react";
 import Header from "@/components/Header";
 import ProductCard from "@/components/ProductCard";
 import Footer from "@/components/Footer";
-import prod1 from "@/assets/prod1.jpg";
+import { supabase } from "@/integrations/supabase/client";
 
 const Surveillance = () => {
-  const generateProducts = () => {
-    const products = [];
-    for (let i = 0; i < 25; i++) {
-      products.push({
-        id: i + 1,
-        image: prod1,
-        title: "THE IMOU RANGER 2 - Caméra 3K Smart",
-        price: "1,299.00 MAD",
-        oldPrice: "1,599.00 MAD",
-        badge: "-19% OFF",
-        stock: "En stock",
-      });
-    }
-    return products;
-  };
+  const [products, setProducts] = useState<any[]>([]);
 
-  const products = generateProducts();
+  useEffect(() => {
+    fetchProducts();
+  }, []);
+
+  const fetchProducts = async () => {
+    const { data } = await supabase
+      .from('products')
+      .select('*, categories!inner(slug)')
+      .eq('categories.slug', 'surveillance')
+      .order('created_at', { ascending: false });
+    if (data) setProducts(data);
+  };
 
   return (
     <div className="min-h-screen bg-background">
@@ -36,13 +34,13 @@ const Surveillance = () => {
           {products.map((product) => (
             <ProductCard
               key={product.id}
-              id={String(product.id)}
-              image={product.image}
+              id={product.id}
+              image={product.image_url || '/placeholder.svg'}
               title={product.title}
-              price={product.price}
-              oldPrice={product.oldPrice}
-              badge={product.badge}
-              stock={product.stock}
+              price={`${product.price} MAD`}
+              oldPrice={product.old_price ? `${product.old_price} MAD` : undefined}
+              badge={product.old_price ? `-${Math.round(((product.old_price - product.price) / product.old_price) * 100)}% OFF` : undefined}
+              stock={product.stock_status}
             />
           ))}
         </div>

@@ -287,14 +287,14 @@ const Header = () => {
       {/* Navigation */}
       <nav className="bg-secondary border-t border-border relative z-40">
         <div className="container mx-auto px-4">
-          <ul className="flex gap-6 overflow-x-auto text-sm font-medium">
+          <ul className="flex gap-4 md:gap-6 overflow-x-auto text-sm font-medium">
             <li className="py-3">
-              <Link to="/" className="hover:text-primary transition-colors whitespace-nowrap">
+              <Link to="/" className="hover:text-primary transition-colors whitespace-nowrap text-xs md:text-sm">
                 Accueil
               </Link>
             </li>
             
-            {/* Mega Menu Items */}
+            {/* Mega Menu Items - simplified for mobile */}
             {Object.entries(categories).map(([key, category]) => (
               <li 
                 key={key}
@@ -304,16 +304,17 @@ const Header = () => {
               >
                 <Link 
                   to={category.route} 
-                  className="hover:text-primary transition-colors whitespace-nowrap flex items-center gap-1"
+                  className="hover:text-primary transition-colors whitespace-nowrap flex items-center gap-1 text-xs md:text-sm"
                 >
-                  {category.name}
-                  <ChevronDown className="h-3 w-3" />
+                  <span className="hidden md:inline">{category.name}</span>
+                  <span className="md:hidden">{category.name.replace(/[💻📽🎮🧰]/g, '').trim()}</span>
+                  <ChevronDown className="h-3 w-3 hidden md:inline" />
                 </Link>
                 
-                {/* Mega Menu Dropdown */}
+                {/* Mega Menu Dropdown - hidden on mobile */}
                 {openDropdown === key && (
                   <div 
-                    className="fixed left-0 right-0 top-[180px] z-[100] px-4"
+                    className="hidden md:block fixed left-0 right-0 top-[180px] z-[100] px-4"
                     onMouseEnter={() => setOpenDropdown(key)}
                     onMouseLeave={() => setOpenDropdown(null)}
                   >
@@ -348,12 +349,12 @@ const Header = () => {
             ))}
 
             <li className="py-3">
-              <Link to="/promotions" className="hover:text-primary transition-colors whitespace-nowrap">
-                Promotions
+              <Link to="/promotions" className="hover:text-primary transition-colors whitespace-nowrap text-xs md:text-sm">
+                Promos
               </Link>
             </li>
             <li className="py-3">
-              <Link to="/contact" className="hover:text-primary transition-colors whitespace-nowrap">
+              <Link to="/contact" className="hover:text-primary transition-colors whitespace-nowrap text-xs md:text-sm">
                 Contact
               </Link>
             </li>

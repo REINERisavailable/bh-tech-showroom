@@ -129,6 +129,19 @@ const AdminProducts = () => {
                   <Input value={formData.image_url} onChange={(e) => setFormData({ ...formData, image_url: e.target.value })} />
                 </div>
                 <div>
+                  <Label>Catégorie</Label>
+                  <select 
+                    className="w-full p-2 border rounded" 
+                    value={formData.category_id} 
+                    onChange={(e) => setFormData({ ...formData, category_id: e.target.value })}
+                  >
+                    <option value="">Aucune catégorie</option>
+                    {categories.map((cat) => (
+                      <option key={cat.id} value={cat.id}>{cat.name}</option>
+                    ))}
+                  </select>
+                </div>
+                <div>
                   <Label>Popularité</Label>
                   <Input type="number" value={formData.popularity} onChange={(e) => setFormData({ ...formData, popularity: parseInt(e.target.value) })} />
                 </div>

@@ -4,6 +4,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { ShoppingCart } from "lucide-react";
 import { useCart } from "@/contexts/CartContext";
 import { useToast } from "@/hooks/use-toast";
+import { Link } from "react-router-dom";
 
 interface ProductCardProps {
   id: string;
@@ -32,22 +33,24 @@ const ProductCard = ({ id, image, title, price, oldPrice, badge, stock }: Produc
   return (
     <Card className="group overflow-hidden hover:shadow-lg transition-shadow">
       <CardContent className="p-4">
-        <div className="relative mb-4">
-          {badge && (
-            <Badge className="absolute top-2 left-2 bg-yellow-500 text-black font-bold z-10">
-              {badge}
-            </Badge>
-          )}
-          <div className="aspect-square overflow-hidden rounded-md bg-secondary">
-            <img 
-              src={image} 
-              alt={title}
-              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-            />
+        <Link to={`/product/${id}`}>
+          <div className="relative mb-4">
+            {badge && (
+              <Badge className="absolute top-2 left-2 bg-yellow-500 text-black font-bold z-10">
+                {badge}
+              </Badge>
+            )}
+            <div className="aspect-square overflow-hidden rounded-md bg-secondary">
+              <img 
+                src={image} 
+                alt={title}
+                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+              />
+            </div>
           </div>
-        </div>
-        
-        <h3 className="text-sm font-medium mb-2 line-clamp-2 min-h-[2.5rem]">{title}</h3>
+          
+          <h3 className="text-sm font-medium mb-2 line-clamp-2 min-h-[2.5rem]">{title}</h3>
+        </Link>
         
         <div className="mb-3">
           <div className="flex items-baseline gap-2">
