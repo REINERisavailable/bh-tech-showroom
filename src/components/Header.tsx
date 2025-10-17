@@ -1,14 +1,17 @@
-import { ShoppingCart, Phone, Search, ChevronDown, User, LogOut } from "lucide-react";
+import { ShoppingCart, Phone, Search, ChevronDown, User, LogOut, Menu } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useCart } from "@/contexts/CartContext";
 import { supabase } from "@/integrations/supabase/client";
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import logo from "@/assets/logo.jpeg";
 
 const Header = () => {
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [user, setUser] = useState<any>(null);
   const [isAdmin, setIsAdmin] = useState(false);
   const { totalItems } = useCart();
@@ -251,6 +254,87 @@ const Header = () => {
           </div>
 
           <div className="flex items-center gap-2">
+            <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
+              <SheetTrigger asChild>
+                <Button variant="ghost" size="icon" className="md:hidden">
+                  <Menu className="h-5 w-5" />
+                </Button>
+              </SheetTrigger>
+              <SheetContent side="left" className="w-80 overflow-y-auto">
+                <SheetHeader>
+                  <SheetTitle>Menu</SheetTitle>
+                </SheetHeader>
+                <div className="mt-6 space-y-4">
+                  <Link 
+                    to="/" 
+                    className="block py-2 text-lg font-medium hover:text-primary"
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
+                    Accueil
+                  </Link>
+                  
+                  <Accordion type="single" collapsible className="w-full">
+                    {Object.entries(categories).map(([key, category]) => (
+                      <AccordionItem key={key} value={key}>
+                        <AccordionTrigger className="text-base font-medium">
+                          {category.name}
+                        </AccordionTrigger>
+                        <AccordionContent>
+                          <div className="space-y-3 pl-2">
+                            {category.subcategories.map((subcat) => (
+                              <div key={subcat.name} className="space-y-2">
+                                <h4 className="font-semibold text-sm text-primary">
+                                  {subcat.name}
+                                </h4>
+                                <ul className="space-y-1.5 pl-2">
+                                  {subcat.items.map((item) => (
+                                    <li key={item.name}>
+                                      <Link
+                                        to={item.route}
+                                        className="text-sm text-muted-foreground hover:text-primary block py-1"
+                                        onClick={() => setMobileMenuOpen(false)}
+                                      >
+                                        {item.name}
+                                      </Link>
+                                    </li>
+                                  ))}
+                                </ul>
+                              </div>
+                            ))}
+                          </div>
+                        </AccordionContent>
+                      </AccordionItem>
+                    ))}
+                  </Accordion>
+
+                  <Link 
+                    to="/promotions" 
+                    className="block py-2 text-lg font-medium hover:text-primary"
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
+                    Promotions
+                  </Link>
+                  <Link 
+                    to="/contact" 
+                    className="block py-2 text-lg font-medium hover:text-primary"
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
+                    Contact
+                  </Link>
+
+                  {user && isAdmin && (
+                    <Link 
+                      to="/admin" 
+                      className="block py-2 text-lg font-medium text-primary border-t pt-4"
+                      onClick={() => setMobileMenuOpen(false)}
+                    >
+                      Panel Admin
+                    </Link>
+                  )}
+                </div>
+              </SheetContent>
+            </Sheet>
+
             {user ? (
               <>
                 {isAdmin && (
