@@ -12,7 +12,7 @@ import Contact from "./pages/Contact";
 import Auth from "./pages/Auth";
 import Cart from "./pages/Cart";
 import ProductDetail from "./pages/ProductDetail";
-import AdminSetup from "./pages/AdminSetup";
+import AdminSetup from "./pages/admin/Setup";
 import AdminDashboard from "./pages/admin/Dashboard";
 import AdminProducts from "./pages/admin/Products";
 import AdminCategories from "./pages/admin/Categories";
