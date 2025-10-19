@@ -6,8 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import Header from '@/components/Header';
-import Footer from '@/components/Footer';
+import AdminLayout from '@/components/admin/AdminLayout';
 import { useToast } from '@/hooks/use-toast';
 import { Eye } from 'lucide-react';
 
@@ -101,9 +100,8 @@ const AdminOrders = () => {
   if (!isAdmin) return null;
 
   return (
-    <div className="min-h-screen bg-background">
-      <Header />
-      <main className="container mx-auto px-4 py-8">
+    <AdminLayout>
+      <div className="space-y-6">
         <h1 className="text-3xl font-bold mb-6">Commandes</h1>
         <div className="overflow-x-auto">
           <Table>
@@ -141,8 +139,7 @@ const AdminOrders = () => {
             </TableBody>
           </Table>
         </div>
-      </main>
-      <Footer />
+      </div>
 
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
         <DialogContent className="max-w-2xl">
@@ -219,7 +216,7 @@ const AdminOrders = () => {
           )}
         </DialogContent>
       </Dialog>
-    </div>
+    </AdminLayout>
   );
 };
 

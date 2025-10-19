@@ -7,8 +7,7 @@ import { Label } from '@/components/ui/label';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { useToast } from '@/hooks/use-toast';
-import Header from '@/components/Header';
-import Footer from '@/components/Footer';
+import AdminLayout from '@/components/admin/AdminLayout';
 import { Pencil, Trash2, Plus } from 'lucide-react';
 
 const AdminProducts = () => {
@@ -96,9 +95,8 @@ const AdminProducts = () => {
   if (!isAdmin) return null;
 
   return (
-    <div className="min-h-screen bg-background">
-      <Header />
-      <main className="container mx-auto px-4 py-8">
+    <AdminLayout>
+      <div className="space-y-6">
         <div className="flex justify-between items-center mb-6">
           <h1 className="text-3xl font-bold">Produits</h1>
           <Dialog open={open} onOpenChange={setOpen}>
@@ -189,9 +187,8 @@ const AdminProducts = () => {
             ))}
           </TableBody>
         </Table>
-      </main>
-      <Footer />
-    </div>
+      </div>
+    </AdminLayout>
   );
 };
 
