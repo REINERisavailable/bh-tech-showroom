@@ -18,10 +18,26 @@ const Auth = () => {
   const { toast } = useToast();
 
   useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      if (session) navigate('/');
-    });
+    checkSessionAndRedirect();
   }, [navigate]);
+
+  const checkSessionAndRedirect = async () => {
+    const { data: { session } } = await supabase.auth.getSession();
+    if (session) {
+      const { data: adminRole } = await supabase
+        .from('user_roles')
+        .select('role')
+        .eq('user_id', session.user.id)
+        .eq('role', 'admin')
+        .maybeSingle();
+      
+      if (adminRole) {
+        navigate('/admin');
+      } else {
+        navigate('/');
+      }
+    }
+  };
 
   const handleAuth = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -29,10 +45,26 @@ const Auth = () => {
 
     try {
       if (isLogin) {
-        const { error } = await supabase.auth.signInWithPassword({ email, password });
+        const { data, error } = await supabase.auth.signInWithPassword({ email, password });
         if (error) throw error;
-        toast({ title: 'Connexion réussie!' });
-        navigate('/');
+        
+        // Check if user is admin
+        if (data.user) {
+          const { data: adminRole } = await supabase
+            .from('user_roles')
+            .select('role')
+            .eq('user_id', data.user.id)
+            .eq('role', 'admin')
+            .maybeSingle();
+          
+          if (adminRole) {
+            toast({ title: 'Connexion admin réussie!' });
+            navigate('/admin');
+          } else {
+            toast({ title: 'Connexion réussie!' });
+            navigate('/');
+          }
+        }
       } else {
         const { error } = await supabase.auth.signUp({
           email,
